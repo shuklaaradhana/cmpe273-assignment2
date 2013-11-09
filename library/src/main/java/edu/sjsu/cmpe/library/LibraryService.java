@@ -28,7 +28,7 @@ public class LibraryService extends Service<LibraryServiceConfiguration> {
     public static BookRepositoryInterface bookRepository;
     public static void main(String[] args) throws Exception {
 	new LibraryService().run(args);	
-	new LibraryTopicListener();
+	
     }
 
     @Override
@@ -64,7 +64,7 @@ public class LibraryService extends Service<LibraryServiceConfiguration> {
 	/** Books APIs */
 	BookRepositoryInterface bookRepository = new BookRepository();
 	environment.addResource(new BookResource(bookRepository,queueName,topicName,instanceName,user,password,host,port,connection));
-
+	environment.addResource(new LibraryTopicListener(bookRepository));
 	/** UI Resources */
 	environment.addResource(new HomeResource(bookRepository));
     }

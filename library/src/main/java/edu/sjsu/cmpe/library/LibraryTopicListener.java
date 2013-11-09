@@ -1,6 +1,7 @@
 package edu.sjsu.cmpe.library;
 
 import java.io.IOException;
+import java.lang.Object;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -8,6 +9,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import org.junit.Assert;
 
 import javax.jms.Connection;
 import javax.jms.Destination;
@@ -32,13 +34,12 @@ import edu.sjsu.cmpe.library.repository.BookRepositoryInterface;
 
 public class LibraryTopicListener {
 
-	
 	static String destination = null;
-	private static BookRepository bookRepository = new BookRepository();
+	private static BookRepositoryInterface bookRepository;
 	
 
-	public LibraryTopicListener(){
-			
+	public LibraryTopicListener(BookRepositoryInterface bookRepository){
+			this.bookRepository=bookRepository;
 		backgroundThreadExecution();
 	}	
 
@@ -60,7 +61,7 @@ public class LibraryTopicListener {
 			 destination =LibraryService.topicName ;
 		}
 		else if("library-b".equals(LibraryService.instanceName)){
-			destination =LibraryService.topicName + "computer";
+			destination =LibraryService.topicName;
 		}		
 
 		try{
@@ -142,15 +143,21 @@ public class LibraryTopicListener {
 		
 		 int flag=0;
 		 for(int i=0;i<bookCollection.size();i++){
-			if(isbn == bookCollection.get(i).getIsbn()){
+		
+				int value = new Long(isbn).compareTo(bookCollection.get(i).getIsbn());
+				if(value == 0){
+			
 				 bookCollection.get(i).setStatus(Status.available);
 				 flag=1;
-				 break;
-			 }
+				 System.out.println ("Book: " + bookCollection.get(i).getIsbn() + "Status: " +  bookCollection.get(i).getStatus());
+				 break;			 
+		 }
+		 
 		 }
 		 
 		 if(flag == 0){
 			 bookRepository.saveBook(book);
+			 System.out.println("New book added: " + book.getIsbn() + "Status:" + book.getStatus() );
 		 }
 		
 	}

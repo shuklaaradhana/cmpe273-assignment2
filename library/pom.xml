@@ -229,7 +229,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>example.pubsub.Publisher</mainClass>
+							<mainClass>edu.sjsu.cmpe.library.LibraryService</mainClass>
 						</manifest>
 					</archive>
 					<descriptorRefs>
